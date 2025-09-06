@@ -1,14 +1,15 @@
 import { useOAuth, useSignIn } from '@clerk/clerk-expo'
-import { Link, useRouter } from 'expo-router'
+import { useRouter } from 'expo-router'
 import React from 'react'
-import { Text, TextInput, TouchableOpacity,View,Alert} from 'react-native'
+import { Text, TextInput, TouchableOpacity, View, Alert, Image} from 'react-native'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { makeRedirectUri } from 'expo-auth-session'
+import { Link } from 'expo-router'
 
 export default function Page() {
   const { signIn, setActive, isLoaded } = useSignIn()
   const router = useRouter()
   const { startOAuthFlow } = useOAuth({ strategy: 'oauth_google' })
-
   const [emailAddress, setEmailAddress] = React.useState('')
   const [password, setPassword] = React.useState('')
 
@@ -69,32 +70,82 @@ export default function Page() {
     }
   }
 
+  if(!isLoaded){
+    return null
+  }
+
   return (
-    <View>
-      <Text>Sign in</Text>
-      <TextInput
-        autoCapitalize="none"
-        value={emailAddress}
-        placeholder="Enter email"
-        onChangeText={(emailAddress) => setEmailAddress(emailAddress)}
-      />
-      <TextInput
-        value={password}
-        placeholder="Enter password"
-        secureTextEntry={true}
-        onChangeText={(password) => setPassword(password)}
-      />
-      <TouchableOpacity onPress={onSignInPress}>
-        <Text>Continue</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={onGoogleSignInPress}>
-        <Text>Continue with Google</Text>
-      </TouchableOpacity>
-      <View style={{ display: 'flex', flexDirection: 'row', gap: 3 }}>
-        <Link href="/sign-up">
-          <Text>Sign up</Text>
-        </Link>
-      </View>
-    </View>
-  )
-}
+      <KeyboardAwareScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        enableOnAndroid={true}
+        extraScrollHeight={200}   // pushes content a bit more above keyboard
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+        className='bg-black'
+      >
+          <View className='mt-[9vh] mb-[5vh]'>
+             <Text className='font-extrabold text-gray-100 text-8xl italic mx-auto my-5 '>NOTIFY</Text>
+             
+             <Image 
+               source={require('../../assets/images/panda-hi-back.png')} 
+               className="w-32 h-32 mx-auto mt-4"
+               resizeMode="contain"
+             />
+            <TouchableOpacity onPress={onGoogleSignInPress}
+                  className="flex-row items-center justify-evenly bg-gray-100 border
+                          border-gray-300 rounded-3xl w-[85vw]  py-4  mx-auto">
+                  <Image 
+                    source={require('../../assets/icons/google.png')} 
+                    className="w-9 h-9 right-1.125 bg-transparent"
+                    resizeMode="contain"
+                  />
+                  <Text className="text-xl italic font-semibold text-justify">Sign in with Google</Text>
+
+            </TouchableOpacity>
+            
+            <View
+                className='w-[85vw] mx-auto mt-10'
+                style={{
+                borderBottomColor: '#ccc', 
+                borderBottomWidth: 3,      
+                marginVertical: 10,      
+              }}/>
+
+            <View className='w-[15%] bg-black self-center bottom-[1.8rem] '>
+            <Text className='bg-black text-gray-100 mx-auto text-xl'>or</Text>
+            </View>
+
+
+            <View className=' flex-col '>
+                  <TextInput
+                        className='self-center italic m-2.5 bg-gray-100 w-[85vw] px-4 rounded-2xl font-medium
+                                   border-2 border-blue-50 overflow-x-auto no-scrollbar'
+                        autoCapitalize="none"
+                        value={emailAddress}
+                        placeholder="Email"
+                        onChangeText={(emailAddress) => setEmailAddress(emailAddress)}
+                  />
+                  <TextInput
+                        className='self-center italic m-2.5 bg-gray-100 w-[85vw] px-4 rounded-2xl font-medium
+                                  border-2 border-blue-50 overflow-x-auto no-scrollbar'
+                        autoCapitalize="none"
+                        value={password}
+                        placeholder="Password"
+                        secureTextEntry={true}
+                        onChangeText={(password) => setPassword(password)}
+                  />
+            </View>
+            <TouchableOpacity  onPress={onSignInPress}
+                    className='h-[3rem] w-[82.5vw] mt-3 bg-gray-100 self-center align-middle justify-center rounded-2xl'>
+              <Text className='font-bold italic mx-auto text-xl'>SIGN IN</Text>
+            </TouchableOpacity>
+            
+            <Text className='italic mx-auto text-lg text-gray-100 mt-5'>{"Don't"} have an account ?
+              <Link href='/(auth)/sign-up'>
+                <Text className='font-semibold '>SIGN UP</Text>
+              </Link> 
+            </Text>
+        </View>
+      </KeyboardAwareScrollView>
+    )
+  }

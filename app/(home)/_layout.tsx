@@ -1,13 +1,11 @@
 import React from 'react'
 import { Tabs } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
-import SignedInChecker from '../components/SignedInChecker'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import SignedInChecker from '@/app/components/FunctionalUnits/SignedInChecker'
 
 export default function HomeLayout(){
   return (
     <SignedInChecker >
-      <SafeAreaView style={{ flex: 1 }}>
       <Tabs
         screenOptions={{
           tabBarActiveTintColor: '#007AFF',
@@ -33,7 +31,6 @@ export default function HomeLayout(){
           }}
         />
       </Tabs>
-      </SafeAreaView>
     </SignedInChecker> 
   )
 }
